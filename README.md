@@ -1,9 +1,45 @@
+# Replace <your-github-username> with your GitHub username
+git clone https://github.com/lerdman//psychopy-web-tasks.git
+cd psychopy-web-tasks
+npm install
+# or
+yarn
+"homepage": "https://<your-github-username>.github.io/psychopy-web-tasks"
+"scripts": {
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d build"
+}
+npm install --save-dev gh-pages
+# or
+
+### 4. Run Locally
+
+```bash
+npm start
+# or
+yarn start
+npm run deploy
+# or
+yarn deploy
+psychopy-web-tasks/
+├── public/
+│   └── index.html       # Single HTML page
+└── src/
+    ├── index.js         # App entry
+    ├── App.js           # Router & layout
+    ├── pages/
+    │   └── Home.js      # Homepage
+    └── components/
+        ├── TaskUploader.js  # File upload form
+        └── TaskList.js      # (Future) display uploaded tasks
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>PsychoPy Web Tasks</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PsychoPy Web Tasks</title>
   </head>
   <body>
     <div id="root"></div>
@@ -17,7 +53,6 @@ import App from './App';
 const root = ReactDOM.createRoot(
   document.getElementById('root')
 );
-
 root.render(
   <React.StrictMode>
     <BrowserRouter>
@@ -30,18 +65,13 @@ import { Routes, Route, NavLink } from 'react-router-dom';
 import Home from './pages/Home';
 import TaskUploader from './components/TaskUploader';
 
-function App() {
+export default function App() {
   return (
     <div>
-      <nav style={{ margin: '1rem' }}>
-        <NavLink to="/" style={{ marginRight: '1rem' }}>
-          Home
-        </NavLink>
-        <NavLink to="/upload">
-          Upload Task
-        </NavLink>
+      <nav style={{ padding: '1rem' }}>
+        <NavLink to="/" style={{ marginRight: '1rem' }}>Home</NavLink>
+        <NavLink to="/upload">Upload Task</NavLink>
       </nav>
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/upload" element={<TaskUploader />} />
@@ -49,68 +79,52 @@ function App() {
     </div>
   );
 }
-
-export default App;
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Home() {
+export default function Home() {
   return (
     <main style={{ padding: '1rem' }}>
       <h1>PsychoPy Web Tasks</h1>
-      <p>Welcome to the PsychoPy Task Repository.</p>
-      <Link to="/upload">Upload your PsychoPy task</Link>
+      <p>Upload and share your PsychoPy experiments.</p>
+      <Link to="/upload">Go to Upload</Link>
     </main>
   );
 }
-
-export default Home;
 import React, { useState } from 'react';
 
-function TaskUploader() {
+export default function TaskUploader() {
   const [file, setFile] = useState(null);
-  const [status, setStatus] = useState('');
+  const [message, setMessage] = useState('');
 
-  const handleFileChange = (e) => {
+  const onFileChange = (e) => {
     setFile(e.target.files[0]);
-    setStatus('');
+    setMessage('');
   };
 
-  const handleUpload = async (e) => {
+  const onUpload = async (e) => {
     e.preventDefault();
     if (!file) {
-      setStatus('Please select a file to upload.');
+      setMessage('Select a .psy or .py file first.');
       return;
     }
-
     try {
-      const content = await file.text();
-      // TODO: parse & validate content
-      setStatus(`File "${file.name}" loaded. (Parsing not yet implemented)`);
-    } catch (err) {
-      setStatus('Error reading file.');
+      const text = await file.text();
+      // TODO: Save `text` to localStorage or a backend
+      setMessage(`Loaded: ${file.name}`);
+    } catch {
+      setMessage('Failed to read file.');
     }
   };
 
   return (
     <section style={{ padding: '1rem' }}>
       <h2>Upload PsychoPy Task</h2>
-      <form onSubmit={handleUpload}>
-        <input
-          type="file"
-          accept=".psy,.py"
-          onChange={handleFileChange}
-        />
-        <button type="submit" style={{ marginLeft: '0.5rem' }}>
-          Upload
-        </button>
+      <form onSubmit={onUpload}>
+        <input type="file" accept=".psy,.py" onChange={onFileChange} />
+        <button type="submit" style={{ marginLeft: '0.5rem' }}>Upload</button>
       </form>
-      {status && <p>{status}</p>}
+      {message && <p>{message}</p>}
     </section>
   );
 }
-
-export default TaskUploader;
-npm start
-
-
