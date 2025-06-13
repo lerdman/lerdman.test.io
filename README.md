@@ -1,10 +1,7 @@
 git clone https://github.com/lerdman/psychopy-web-tasks.git
 cd psychopy-web-tasks
 npm install
-yarn install
 npm start
-# or
-yarn start
 {
   "homepage": "https://lerdman.github.io/psychopy-web-tasks",
   "scripts": {
